@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import numpy as np, time, sys
 
+ADS_I2CADDR = 0x48
+
 # import relevant pieces from adafruit
 import Adafruit_ADS1x15
 
@@ -12,7 +14,14 @@ class ADS1115Config(object):
 
   def __init__(self, confdict = None):
     if confdict==None: confdict={}
-          
+
+# -- i2c address
+    if 'I2CADDR' in confdict:
+      self.I2CAddr = confdict['I2CADDR']
+      print("ADS1115: I2C address set to %x "%(self.I2CAddr) )
+    else: 
+      self.I2CAddr = ADS_I2CADDR  # use default
+    
 # -- chosen ADCChannels ADC ADS1115
     if "ADCChannels" in confdict:
       self.ADCChannels = confdict["ADCChannels"]  
@@ -63,7 +72,7 @@ class ADS1115Config(object):
   #Hardware configuration:
     try:
       # Create an ADS1115 ADC (16-bit) instance.
-      self.ADS = Adafruit_ADS1x15.ADS1115()
+      self.ADS = Adafruit_ADS1x15.ADS1115(address=self.I2CAddr)
     except Exception as e:
       print("ADS1115Config: Error initialising device - exit")
       print(str(e))
