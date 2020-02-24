@@ -281,18 +281,19 @@ class runPhyPiDAQ(object):
           if Formulae[ifc]: print('   FChan ', ifc, '   ', Formulae[ifc])   
     self.Formulae = Formulae
     self.NFormulae = NFormulae
-        
-  # number of channels may be greater than number of hardware channels
-    nc = max(NHWChannels, NFormulae)
+    # re-set number of Channels if Formulae are defined       
+    nc = NFormulae if NFormulae else NHWChannels
     PhyPiConfDict['NChannels'] = nc
-
+    
   # Add information for graphical display(s) to PhyPiConfDict
     if 'ChanNams' not in PhyPiConfDict:
-      PhyPiConfDict['ChanNams' ] = self.ChanNams 
       if NFormulae > NHWChannels:
         self.ChanNams += (NFormulae-NHWChannels) * ['F']
+      else:
+        self.ChanNams = self.ChanNams[:nc] 
       for ifc in range( NFormulae): 
         if Formulae[ifc]: self.ChanNams[ifc] = 'F' + str(ifc)
+      PhyPiConfDict['ChanNams' ] = self.ChanNams 
 
     if 'ChanUnits' not in PhyPiConfDict:
       if self.ChanUnits != None:
@@ -407,7 +408,8 @@ class runPhyPiDAQ(object):
     '''
 
     #  copy data from hardware channels
-    for ifc in range(self.NFormulae):
+    #for ifc in range(self.NFormulae):
+    for ifc in range(self.NHWChannels):
       exec('c'+str(ifc) + ' = self.data['+str(ifc)+']')
       
     #  apply formulae to signal data
@@ -460,7 +462,7 @@ class runPhyPiDAQ(object):
     kbdthrd.start()  
 
     # set up space for data
-    self.data = np.zeros(NChannels)
+    self.data = np.zeros(max(NChannels, self.NHWChannels))
 
     tflash = min(0.2, interval/2.) # pulse duration for readout LED
     if self.RunLED: self.RunLED.pulse(0) # switch on status LED
@@ -500,19 +502,19 @@ class runPhyPiDAQ(object):
 
         # display data
           if DisplayModule != None:  
-            display.show(self.data)
+            display.show(self.data[:NChannels])
 
         # store (latest) data in ring buffer as a list ...
           if self.RBuf != None:
-            self.RBuf.store( self.data.tolist())
+            self.RBuf.store( self.data[:NChannels].tolist())
 
         # ... and record all data to disc ...
-          if self.DatRec: self.DatRec(self.data)
+          if self.DatRec: self.DatRec(self.data[:Nchannels])
 
         # ... and write to fifo
           if self.fifo:
             print(','.join(['{0:.3f}'.format(cnt*interval)] +
-                           ['{0:.4g}'.format(d) for d in self.data]),
+                  ['{0:.4g}'.format(d) for d in self.data[:Nchannels]]),
                   file = self.fifo)
 
           wait() #
