@@ -6,7 +6,7 @@ import numpy as np, time, sys, spidev, math
 
 
 class MAX31865Config(object):
-  '''ADC ADS1115Config configuration and interface'''
+  '''RTD-to-Digital Converter - configuration and interface'''
 
   def __init__(self, confdict = None):
     if confdict==None: confdict={}
