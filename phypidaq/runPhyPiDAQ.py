@@ -509,12 +509,12 @@ class runPhyPiDAQ(object):
             self.RBuf.store( self.data[:NChannels].tolist())
 
         # ... and record all data to disc ...
-          if self.DatRec: self.DatRec(self.data[:Nchannels])
+          if self.DatRec: self.DatRec(self.data[:NChannels])
 
         # ... and write to fifo
           if self.fifo:
             print(','.join(['{0:.3f}'.format(cnt*interval)] +
-                  ['{0:.4g}'.format(d) for d in self.data[:Nchannels]]),
+                  ['{0:.4g}'.format(d) for d in self.data[:NChannels]]),
                   file = self.fifo)
 
           wait() #
