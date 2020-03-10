@@ -38,7 +38,6 @@ class MAX31865Config(object):
     # for T > 0
     # T(R) = (-A + sqrt(A²-4B(a-R/R0)))/2B
     # T(R) = (Z1 + sqrt(Z2+Z3*R)/Z4
-    self.R0 = 100.0
     self.A = 3.9083e-3
     self.B = -5.775e-7
     self.C = -4.183e-12
