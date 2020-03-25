@@ -112,7 +112,7 @@ class runPhyPiDAQ(object):
       rc = 1
     elif cmd == 's':  
       self.DAQ_ACTIVE = False 
-      if self.RBuf != None:
+      if self.RBuf is not None:
         print('\n storing data to file ', self.bufferFile, ' - now paused')
         print(42*' ' + '  -> R(esume), E(nd) + <ret> ', end='', flush=True)
         self.storeBufferData(self.bufferFile) 
@@ -296,7 +296,7 @@ class runPhyPiDAQ(object):
       PhyPiConfDict['ChanNams' ] = self.ChanNams 
 
     if 'ChanUnits' not in PhyPiConfDict:
-      if self.ChanUnits != None:
+      if self.ChanUnits is not None:
         PhyPiConfDict['ChanUnits' ] = self.ChanUnits
       else:
         PhyPiConfDict['ChanUnits' ] = [''] * nc 
@@ -319,7 +319,7 @@ class runPhyPiDAQ(object):
       PhyPiConfDict['ChanLimits'] = ChanLims # take from hw devices if not set
       
   # start data recording to disk if required
-    if PhyPiConfDict['DataFile'] != None:
+    if PhyPiConfDict['DataFile'] is not None:
       FName = PhyPiConfDict['DataFile']
       self.DatRec = DataRecorder(FName, PhyPiConfDict)
       if self.verbose:  print('  storing data to file ',FName)
@@ -334,7 +334,7 @@ class runPhyPiDAQ(object):
       self.bufferFile = "PhyPiData"
       PhyPiConfDict['bufferData'] = self.bufferFile     
     # set-up a ring buffer 
-    if self.bufferFile != None:    
+    if self.bufferFile is not None:    
       self.RBuf = RingBuffer(PhyPiConfDict['NHistoryPoints'])
     else:
       self.RBuf = None
@@ -438,7 +438,7 @@ class runPhyPiDAQ(object):
     if 'DAQCntrl' not in self.PhyPiConfDict:  
       self.PhyPiConfDict['DAQCntrl'] = True  # enable run control buttons
 
-    if DisplayModule != None:  
+    if DisplayModule is not None:  
       display = Display(interval = None, 
                     confdict = self.PhyPiConfDict, 
                     cmdQ = cmdQ,
@@ -501,11 +501,11 @@ class runPhyPiDAQ(object):
           if self.Formulae: self.apply_formulae()
 
         # display data
-          if DisplayModule != None:  
+          if DisplayModule is not None:  
             display.show(self.data[:NChannels])
 
         # store (latest) data in ring buffer as a list ...
-          if self.RBuf != None:
+          if self.RBuf is not None:
             self.RBuf.store( self.data[:NChannels].tolist())
 
         # ... and record all data to disc ...
@@ -540,13 +540,13 @@ class runPhyPiDAQ(object):
 
     finally:
       self.ACTIVE = False
-      if self.RunLED != None: self.RunLED.pulse(-1) # RunLED off 
+      if self.RunLED is not None: self.RunLED.pulse(-1) # RunLED off 
       if self.DatRec: self.DatRec.close()
       for DEV in self.DEVs:
         DEV.closeDevice() # close down hardware device
-      if DisplayModule != None: display.close()
-      if self.RunLED != None: self.RunLED.close() 
-      if self.ReadoutLED != None: self.ReadoutLED.close() 
+      if DisplayModule is not None: display.close()
+      if self.RunLED is not None: self.RunLED.close() 
+      if self.ReadoutLED is not None: self.ReadoutLED.close() 
       time.sleep(1.)
      
       if self.verbose:

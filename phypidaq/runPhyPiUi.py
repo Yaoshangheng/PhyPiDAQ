@@ -78,24 +78,24 @@ class PhyPiUiInterface(Ui_PhyPiWindow):
 
 # find user home directory and create directory 'PhyPi' 
       self.homedir = os.getenv('HOME')
-      if ConfDir != None:
+      if ConfDir is not None:
         if ConfDir[0] != '/':    # relative path
           self.ConfDir = self.homedir + '/' + ConfDir
         else:                     # absolute path          
           self.ConfDir = ConfDir
       else:
-        if self.ConfDir == None: self.ConfDir = self.homedir + '/PhyPi' 
+        if self.ConfDir is None: self.ConfDir = self.homedir + '/PhyPi' 
       if not os.path.exists(self.ConfDir): 
         os.makedirs(self.ConfDir)
 
 # set initial working Directory
-      if WDname != None:
+      if WDname is not None:
         if WDname[0] != '/':    # relative path
           self.WDname = self.homedir + '/' + WDname          
         else:                   # absolute path
           self.WDname = WDname          
       else:
-        if self.WDname == None: self.WDname = self.ConfDir
+        if self.WDname is None: self.WDname = self.ConfDir
       if not os.path.exists(self.WDname): 
         os.makedirs(self.WDname)
         
@@ -315,7 +315,7 @@ class PhyPiUiInterface(Ui_PhyPiWindow):
           return 1
       
       # name of DAQ configuration file in confdir
-      if(DAQfile)==None: # derive from RunTag if not given
+      if(DAQfile) is None: # derive from RunTag if not given
         DAQfile = str(self.lE_RunTag.text() ).replace(' ','') + '.daq'
       fullDAQfile = confdir + '/' + DAQfile
 
